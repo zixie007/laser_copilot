@@ -315,6 +315,7 @@ private:
     Eigen::Vector3d direction;
     const double min_distance_to_keep =
         std::min<double>(objs_msg_.range_min, min_dist_);
+    // const double min_distance_to_keep = 1;  //20241212 change 1 固定停止距离
     for (int i = 0; i < GROUP_NUM; i++) {
       if (objs_msg_.ranges[i] >= MAX_DIST)  //忽略远范围障碍物
         continue;
@@ -326,6 +327,8 @@ private:
           std::max(0.0, cur_pose_.linear_vel.dot(direction));
       const double delay_distance =  // 计算因传感器延迟导致的额外距离
           obj_sensor_delay_ns_ * cur_vel_parallel * 1e-9;
+      // if(objs_msg_.ranges[i]< 0.3) //20241212 change 2 再次滤除自身一定范围内的点
+      //   continue;
       const double stop_distance = std::max(  // 计算需要停止的距离
           0.0, objs_msg_.ranges[i] - delay_distance - min_distance_to_keep);
       const double vel_max_pid = stop_distance * 0.3;  //根据停止距离计算最大速度

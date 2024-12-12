@@ -44,7 +44,7 @@ private:
   }
 
   void cb_lvx(livox_ros_driver2::msg::CustomMsg::ConstSharedPtr msg) {
-    static sensor_msgs::msg::LaserScan prv_ls;
+    static sensor_msgs::msg::LaserScan prv_ls;  //20241212 change3 注释掉
     sensor_msgs::msg::LaserScan ls = new_laser_scan_msg(msg->header);  //消息格式转换，将mid360雷达数据转换为ROS下的laserscan消息格式
     ls.scan_time = msg->points.back().offset_time / 1e9f;  //通过最后一个点的时间辍，计算激光雷达的扫描时间。转换为纳米级单位
     ls.time_increment = ls.scan_time / msg->point_num;  //计算每个点之间的时间增量
@@ -61,6 +61,7 @@ private:
       range_max = std::max(range, range_max);  //扔掉一部分近身点后，重新计算最小最大探测距离
       range_min = std::min(range, range_min);
     }
+    // static sensor_msgs::msg::LaserScan prv_ls=ls; //20241212 change3  初始化prv_ls
     //数据融合
     if (range_max == 0.0 && prv_ls.range_max != 0.0) {  
       prv_ls.header = ls.header;  //若当前最大探测距离为0，则直接使用前一帧作为当前数据
