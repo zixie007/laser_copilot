@@ -1,7 +1,6 @@
 {
     "files.associations": {
-        "cmath": "cpp",
-        "complex": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "functional": "cpp"
     }
 }

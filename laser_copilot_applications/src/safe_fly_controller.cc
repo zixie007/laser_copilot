@@ -279,7 +279,7 @@ private:
     if (objs_msg_.range_min > objs_msg_.range_max) {
       return;
     }
-    if (std::abs(setpoint.z()) > 0.05 || setpoint.norm() < 0.05) {  //判断是否符合速度设置
+    if (std::abs(setpoint.z()) > 0.05 || setpoint.norm() < 0.05) {  //z轴速度大于0.05，或速度小于0.05，不进行速度控制
       return;
     }
     double speed = setpoint.norm();

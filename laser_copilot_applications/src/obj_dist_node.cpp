@@ -34,9 +34,9 @@ private:
   void init_callback() {
     using namespace std::placeholders;
     pub_ls_ = create_publisher<sensor_msgs::msg::LaserScan>(
-        "out/laser_scan", 5);
+        "out/laser_scan", 5);  //safe_fly_controller.cc中订阅了该话题
     //订阅雷达数据，具体订阅话题按照发布者改变 
-    sub_lvx_ = create_subscription<livox_ros_driver2::msg::CustomMsg>(  //由livox雷达发布 
+    sub_lvx_ = create_subscription<livox_ros_driver2::msg::CustomMsg>(  //由livox雷达发布   /livox/lidar
         "sub/lvx", rclcpp::SensorDataQoS(),
         std::bind(&obj_dist::cb_lvx, this, _1));
     sub_pc2_ = create_subscription<sensor_msgs::msg::PointCloud2>(  //由其他传感器发送
@@ -55,9 +55,9 @@ private:
       const auto &p = msg->points[i];
       if (!is_in_detect_range(p))  //若点不满足z在+-0.5之间,水平欧几里德距离>0.2，扔掉
         continue;
-      auto &range = ranges[id(p.x, p.y)];  //通过x y将空间中的点对应到ranges数组中
+      auto &range = ranges[id(p.x, p.y)];  //ranges[i]<-->range
       auto tmp = range;
-      range = std::min(range, dist(p.x, p.y));  //只考虑水平避障
+      range = std::min(range, dist(p.x, p.y));  //更新range(i) 除自身外最近的点  range初始化了吗？？？
       range_max = std::max(range, range_max);  //扔掉一部分近身点后，重新计算最小最大探测距离
       range_min = std::min(range, range_min);
     }
